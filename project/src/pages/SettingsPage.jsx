@@ -2,11 +2,12 @@ import { useState } from 'react';
 import DashboardLayout from './DashboardLayout';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 import {
   Bell, Shield, Globe, Moon, Eye, Trash2, Lock,
   ChevronRight, Check, LogOut, Sun, AlertTriangle, X,
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 /* ─── Pill Toggle ─────────────────────────────────── */
 function Toggle({ checked, onChange }) {
@@ -194,8 +195,6 @@ function DeleteModal({ userName, onConfirm, onCancel, isDark, t }) {
     </div>
   );
 }
-
-import { useLanguage } from '../context/LanguageContext';
 
 /* ─── Main Page ───────────────────────────────────── */
 export default function SettingsPage() {

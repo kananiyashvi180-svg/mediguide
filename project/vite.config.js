@@ -7,4 +7,21 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split React core into its own chunk
+          'react-vendor': ['react', 'react-dom'],
+          // Split router into its own chunk
+          'router': ['react-router-dom'],
+          // Split Leaflet (map library) — biggest chunk contributor
+          'leaflet-vendor': ['leaflet', 'react-leaflet'],
+          // Split lucide icons
+          'icons': ['lucide-react'],
+        },
+      },
+    },
+  },
 })

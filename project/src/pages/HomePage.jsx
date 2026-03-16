@@ -6,8 +6,8 @@ import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
 import HospitalCard from '../components/hospital/HospitalCard';
 import {
-  Search, MapPin, ArrowRight, Star, Shield, Clock, Zap,
-  Heart, Phone, ChevronDown, Activity, Users, Building2, Award,
+  Search, MapPin, ArrowRight, Star, Shield, Clock,
+  Heart, Phone, Activity, Users, Building2, Award, Map, Navigation, Locate
 } from 'lucide-react';
 
 const SYMPTOM_SUGGESTIONS = [
@@ -89,7 +89,11 @@ export default function HomePage() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate(user ? '/map' : '/login', { state: { search: searchTerm } });
+    if (searchTerm.trim()) {
+      navigate(user ? `/hospitals?q=${encodeURIComponent(searchTerm)}` : '/login', { state: { search: searchTerm } });
+    } else {
+      navigate(user ? '/hospitals' : '/login');
+    }
   };
 
   const featuredHospitals = hospitals.slice(0, 3);
@@ -177,7 +181,8 @@ export default function HomePage() {
 
           <div className="flex flex-wrap gap-2 justify-center">
             {['Emergency', 'Cardiology', 'Orthopedics', 'Pediatrics', 'Neurology'].map(tag => (
-              <button key={tag} onClick={() => navigate('/map')}
+              <button key={tag}
+                onClick={() => navigate(user ? `/hospitals?q=${encodeURIComponent(tag)}` : '/login')}
                 className="bg-white/10 border border-white/20 text-white text-xs px-3 py-1.5 rounded-full hover:bg-white/20 transition-colors backdrop-blur">
                 {tag}
               </button>
@@ -211,7 +216,7 @@ export default function HomePage() {
             <p className="text-slate-500 text-sm">Top-rated hospitals in your area</p>
           </div>
           <Link
-            to={user ? '/map' : '/login'}
+            to={user ? '/hospitals' : '/login'}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold text-sm transition-colors"
           >
             View All <ArrowRight size={16} />
@@ -246,6 +251,109 @@ export default function HomePage() {
                 <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Map Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left: text */}
+            <div className="animate-fadeInUp">
+              <span className="badge bg-blue-100 text-blue-600 mb-4">Live Map</span>
+              <h2 className="text-3xl font-extrabold text-slate-800 mb-4 leading-tight">
+                Hospitals on the Map,{' '}
+                <span className="gradient-text">Right Near You</span>
+              </h2>
+              <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                Our interactive live map shows all verified hospitals around your current location.
+                Pin, explore and get directions — all from one place.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  { icon: Locate,     text: 'Auto-detects your GPS location instantly' },
+                  { icon: MapPin,     text: 'Red pins mark every nearby hospital' },
+                  { icon: Navigation, text: 'One-tap directions via OpenStreetMap' },
+                  { icon: Star,       text: 'Ratings and fees visible right in the popup' },
+                ].map(({ icon: I, text }) => (
+                  <li key={text} className="flex items-center gap-3 text-sm text-slate-600">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                      <I size={15} className="text-blue-600" />
+                    </div>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to={user ? '/map' : '/login'}
+                className="btn-primary inline-flex"
+              >
+                <Map size={17} /> Open Live Map
+              </Link>
+            </div>
+
+            {/* Right: map preview card */}
+            <div className="relative animate-fadeInUp" style={{ animationDelay: '0.15s' }}>
+              {/* Outer glow */}
+              <div className="absolute -inset-3 bg-gradient-to-br from-blue-400/20 to-green-400/10 rounded-3xl blur-xl" />
+              <div className="relative bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
+                {/* Fake map image */}
+                <div className="relative h-72 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=80"
+                    alt="Map preview"
+                    className="w-full h-full object-cover"
+                  />
+                  {/* overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-blue-900/60 via-transparent to-transparent" />
+                  {/* Floating hospital pins */}
+                  {[{ top: '30%', left: '42%', delay: '0s' }, { top: '55%', left: '62%', delay: '0.3s' }, { top: '20%', left: '65%', delay: '0.6s' }].map((p, i) => (
+                    <div key={i} className="absolute animate-bounce" style={{ top: p.top, left: p.left, animationDelay: p.delay, animationDuration: '2.5s' }}>
+                      <div className="w-7 h-7 bg-red-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                        <MapPin size={13} className="text-white fill-white" />
+                      </div>
+                    </div>
+                  ))}
+                  {/* You are here pin */}
+                  <div className="absolute" style={{ top: '45%', left: '45%' }}>
+                    <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center shadow-xl border-3 border-white ring-4 ring-blue-200">
+                      <Locate size={16} className="text-white" />
+                    </div>
+                    <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-white text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full shadow whitespace-nowrap">
+                      You are here
+                    </div>
+                  </div>
+                  {/* Bottom label */}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-white/90 backdrop-blur rounded-xl px-4 py-2 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-xs font-semibold text-slate-700">Live Hospital Map</span>
+                      </div>
+                      <span className="text-xs text-slate-400">{hospitals.length}+ hospitals</span>
+                    </div>
+                  </div>
+                </div>
+                {/* Bottom strip */}
+                <div className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <div className="w-3 h-3 rounded-full bg-blue-500" /> Your location
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                      <div className="w-3 h-3 rounded-full bg-red-500" /> Hospitals
+                    </div>
+                  </div>
+                  <Link
+                    to={user ? '/map' : '/login'}
+                    className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 transition-colors"
+                  >
+                    Open full map <ArrowRight size={12} />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
