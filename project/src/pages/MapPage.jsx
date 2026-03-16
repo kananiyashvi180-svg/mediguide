@@ -103,7 +103,7 @@ export default function MapPage() {
               )}
 
               {/* Hospital Markers */}
-              {hospitals.map(h => (
+              {hospitals.filter(h => h.lat && h.lng).map(h => (
                 <Marker
                   key={h.id}
                   position={[h.lat, h.lng]}
@@ -116,7 +116,7 @@ export default function MapPage() {
                       <p className="text-xs text-slate-500 mb-1">{h.specialization}</p>
                       <div className="flex items-center gap-1 text-amber-500 text-xs mb-1">
                         <Star size={11} fill="currentColor" /> <span>{h.rating}</span>
-                        <span className="text-slate-400 ml-1">{h.distance} km</span>
+                        {h.distance != null && <span className="text-slate-400 ml-1">{h.distance.toFixed(1)} km</span>}
                       </div>
                       <p className="text-xs text-blue-600 font-semibold">₹{h.consultationFee} consultation</p>
                     </div>
@@ -157,7 +157,7 @@ export default function MapPage() {
                         <Star size={11} fill="currentColor" /> {h.rating}
                       </div>
                       <span className="text-slate-300">•</span>
-                      <span className="text-xs text-slate-500">{h.distance.toFixed(1)} km</span>
+                      <span className="text-xs text-slate-500">{h.distance != null ? h.distance.toFixed(1) + ' km' : '— km'}</span>
                     </div>
                   </div>
                   <ChevronRight size={14} className="text-slate-300 shrink-0 mt-1" />
@@ -188,7 +188,7 @@ export default function MapPage() {
                       <Star size={14} fill="currentColor" /> {selected.rating} ({selected.reviewCount?.toLocaleString()} reviews)
                     </span>
                     <span className="flex items-center gap-1 text-slate-500">
-                      <Navigation size={13} /> {selected.distance.toFixed(1)} km away
+                      <Navigation size={13} /> {selected.distance != null ? selected.distance.toFixed(1) + ' km away' : 'Distance unknown'}
                     </span>
                     <span className="flex items-center gap-1 text-blue-600 font-semibold">
                       ₹{selected.consultationFee} consultation
