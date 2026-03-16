@@ -613,3 +613,32 @@ html.dark .hosp-card-tag, html.dark .cat-chip { background-color: #374151 !impor
 html.dark .hosp-card-stat { background-color: #111827 !important; border-color: #374151 !important; }
 html.dark .hosp-card-spec-badge, html.dark .hosp-card-dist { background-color: #374151 !important; color: #fff !important; }
 html.dark .hosp-card-save-btn.unsaved { background-color: #374151 !important; color: #d1d5db !important; }
+
+/* ── Custom Map Popup Styling ── */
+.custom-map-popup .leaflet-popup-content-wrapper {
+  border-radius: 1.25rem !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+.custom-map-popup .leaflet-popup-content {
+  margin: 12px !important;
+}
+.custom-map-popup .leaflet-popup-tip {
+  background: white !important;
+}
+
+/* ── Custom Scrollbar ── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
